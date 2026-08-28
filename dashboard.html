@@ -39,6 +39,7 @@ textarea{min-height:145px;resize:vertical}.drop{border:2px dashed #cbd5e1;border
 @media(max-width:950px){.add-layout{grid-template-columns:1fr}.preview-panel{position:static}}
 </style>
 </head>
+
 <body>
 <aside id="side" class="side">
   <h3 style="padding:0 10px">Palia Win Store</h3>
@@ -51,49 +52,51 @@ textarea{min-height:145px;resize:vertical}.drop{border:2px dashed #cbd5e1;border
 <div id="overlay" class="overlay"></div>
 
 <header class="top">
-  <button id="menu" class="menu">☰</button>
-  <div class="brand">Palia Win Store <span class="subbrand"> / Add Windows App</span></div>
+  <button id="menu" class="menu" aria-label="Open menu">☰</button>
+  <div class="brand">Palia Win Store <span class="subbrand">/ Add Windows App</span></div>
 </header>
 
 <main class="wrap">
   <div style="margin-bottom:22px">
     <h1>Add Windows App</h1>
-    <p class="muted">Add app information and see the exact Store-style preview on the right.</p>
+    <p class="muted">Add app information on the left and see the complete Store preview on the right.</p>
   </div>
+
   <div class="add-layout">
-    <div>
-    <h1>Add Windows App</h1>
-    <p class="muted">Add the icon, Windows installer, banner and up to 5 screenshots.</p>
-  </div>
+    <div class="form-column">
 
-  <section class="panel">
-    <h2>Basic Information</h2>
-    <div class="grid">
-      <div><label>App Name *</label><input id="name" placeholder="Example: Palia PDF Tools"></div>
-      <div><label>Version *</label><input id="version" placeholder="1.0.0"></div>
-      <div><label>Category</label><select id="category"><option>Utilities</option><option>Productivity</option><option>Multimedia</option><option>Tools</option><option>Games</option><option>Security</option><option>Other</option></select></div>
-      <div><label>Developer</label><input id="developer" placeholder="Developer name"></div>
-      <div class="full"><label>Short tagline</label><input id="tagline" placeholder="One-line description"></div>
-    </div>
-  </section>
+      <section class="panel">
+        <h2>Basic Information</h2>
+        <div class="grid">
+          <div><label>App Name *</label><input id="name" placeholder="Example: Palia PDF Tools"></div>
+          <div><label>Version *</label><input id="version" placeholder="1.0.0"></div>
+          <div><label>Category</label><select id="category"><option>Utilities</option><option>Productivity</option><option>Multimedia</option><option>Tools</option><option>Games</option><option>Security</option><option>Other</option></select></div>
+          <div><label>Developer</label><input id="developer" placeholder="Developer name"></div>
+          <div class="full"><label>Short tagline</label><input id="tagline" placeholder="One-line description"></div>
+        </div>
+      </section>
 
-  <section class="panel">
-    <h2>App Media</h2>
-    <div class="grid">
-      <div>
-        <label>App Icon *</label>
-        <div class="drop"><label for="icon"><strong>🖼️ Choose app icon</strong><span class="muted">PNG / JPG / WEBP</span><input id="icon" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="iconName" class="file-name"></div></div>
-      </div>
-      <div>
-        <label>Windows Installer *</label>
-        <div class="drop"><label for="installer"><strong>🪟 Choose .EXE / .MSI / .ZIP</strong><span class="muted">Windows application package</span><input id="installer" type="file" accept=".exe,.msi,.zip,application/zip"></label><div id="installerName" class="file-name"></div></div>
-      </div>
-      <div class="full">
-        <label>Store Banner</label>
-        <div class="drop"><label for="banner"><strong>🖼️ Choose banner</strong><span class="muted">Recommended 1200 × 500</span><input id="banner" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="bannerName" class="file-name"></div></div>
-      </div>
-      <div class="full">
-        <label>App Screenshots — 5 Slots</label>
+      <section class="panel">
+        <h2>App Media</h2>
+        <div class="grid">
+          <div>
+            <label>App Icon *</label>
+            <div class="drop"><label for="icon"><strong>🖼️ Choose app icon</strong><span class="muted">PNG / JPG / WEBP</span><input id="icon" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="iconName" class="file-name"></div></div>
+          </div>
+          <div>
+            <label>Windows Installer *</label>
+            <div class="drop"><label for="installer"><strong>🪟 Choose .EXE / .MSI / .ZIP</strong><span class="muted">Windows application package</span><input id="installer" type="file" accept=".exe,.msi,.zip,application/zip"></label><div id="installerName" class="file-name"></div></div>
+          </div>
+          <div class="full">
+            <label>Store Banner</label>
+            <div class="drop"><label for="banner"><strong>🖼️ Choose banner</strong><span class="muted">Recommended 1200 × 500</span><input id="banner" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="bannerName" class="file-name"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>App Screenshots — 5 Slots</h2>
+        <p class="muted">Upload each screenshot separately. Remove any screenshot individually.</p>
         <div class="shots-grid">
           <div class="shot-upload"><div class="slot-title">Screenshot 1</div><label for="screen1" class="choose">＋ Add Screenshot<input id="screen1" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen1">Remove</button><div id="screen1Name" class="file-name"></div></div>
           <div class="shot-upload"><div class="slot-title">Screenshot 2</div><label for="screen2" class="choose">＋ Add Screenshot<input id="screen2" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen2">Remove</button><div id="screen2Name" class="file-name"></div></div>
@@ -101,70 +104,66 @@ textarea{min-height:145px;resize:vertical}.drop{border:2px dashed #cbd5e1;border
           <div class="shot-upload"><div class="slot-title">Screenshot 4</div><label for="screen4" class="choose">＋ Add Screenshot<input id="screen4" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen4">Remove</button><div id="screen4Name" class="file-name"></div></div>
           <div class="shot-upload"><div class="slot-title">Screenshot 5</div><label for="screen5" class="choose">＋ Add Screenshot<input id="screen5" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen5">Remove</button><div id="screen5Name" class="file-name"></div></div>
         </div>
-        <div id="preview" class="preview"></div>
-      </div>      </div>
-    </div>
-  </section>
+      </section>
 
-  <section class="panel">
-    <h2>AI Description</h2>
-    <p class="muted">AI can create the Store description from the app name, category, tagline and developer.</p>
-    <label>AI API Key <span class="muted">(optional; used only in this browser session)</span></label>
-    <input id="aiKey" type="password" placeholder="Gemini API key">
-    <label>Description</label>
-    <div class="airow">
-      <textarea id="description" placeholder="Click Generate with AI, or write the description manually."></textarea>
-      <button id="aiBtn" class="btn secondary" style="align-self:start">✨ Generate with AI</button>
-    </div>
-    <div id="aiMsg" class="notice" style="margin-top:12px;display:none"></div>
-  </section>
-
-  <section class="panel">
-    <h2>GitHub Release</h2>
-    <p class="muted">The public Store should download the installer from a GitHub Release. Do not put the installer into the website repository.</p>
-    <label>GitHub Release Download URL *</label>
-    <input id="releaseUrl" type="url" placeholder="https://github.com/user/repo/releases/download/v1.0/app.exe">
-    <label style="display:flex;align-items:center;gap:8px"><input id="publish" type="checkbox" style="width:auto"> Publish immediately</label>
-    <div class="notice" style="margin-top:12px">This page prepares the app information. Actual GitHub Release file upload requires GitHub authentication/token or a server-side upload service; a browser-only GitHub Pages page cannot safely hold your GitHub token.</div>
-  </section>
-
-  <div id="msg" class="notice" style="display:none;margin-bottom:15px"></div>
-  <div class="actions">
-    <button class="btn secondary" onclick="location.href='dashboard.html'">Cancel</button>
-    <button id="saveBtn" class="btn primary">Save Windows App</button>
-  </div>
-  </div>
-
-  <aside class="preview-panel">
-    <section class="panel">
-      <h2>PC Preview</h2>
-      <p class="muted" style="font-size:12px">Live Windows Store preview</p>
-      <div class="pc-frame">
-        <div class="pc-screen">
-          <div class="pc-bar"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-title">Palia Win Store</span></div>
-          <div class="store-head">
-            <img class="store-mini-logo" src="assets/palia-win-store-icon.svg" alt="">
-            <div class="store-name">Palia Win Store</div>
-            <div class="store-nav">Windows Apps · Categories</div>
-          </div>
-          <div class="app-hero" id="pvBanner"><div class="hero-placeholder">Banner Preview</div></div>
-          <div class="app-info">
-            <div class="app-title-row">
-              <div id="pvIcon" class="app-icon-preview app-icon-placeholder">APP ICON</div>
-              <div><div id="pvName" class="p-title">Your App Name</div><div id="pvMeta" class="p-meta">Version — · Utilities · Windows</div></div>
-            </div>
-            <div id="pvDesc" class="p-desc">Your AI-generated app description will appear here.</div>
-            <div class="p-download">Download for Windows</div>
-            <div class="p-shots-title">Screenshots</div>
-            <div id="pvShots" class="p-shots">
-              <div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div>
-            </div>
-          </div>
+      <section class="panel">
+        <h2>AI Description</h2>
+        <p class="muted">Generate a professional description from the app information.</p>
+        <label>AI API Key <span class="muted">(optional; used only in this browser session)</span></label>
+        <input id="aiKey" type="password" placeholder="Gemini API key">
+        <label>Description</label>
+        <div class="airow">
+          <textarea id="description" placeholder="Click Generate with AI, or write the description manually."></textarea>
+          <button id="aiBtn" class="btn secondary" style="align-self:start">✨ Generate with AI</button>
         </div>
-        <div class="monitor-stand"></div><div class="monitor-base"></div>
+        <div id="aiMsg" class="notice" style="margin-top:12px;display:none"></div>
+      </section>
+
+      <section class="panel">
+        <h2>GitHub Release</h2>
+        <p class="muted">Use the GitHub Release asset URL for the Windows installer.</p>
+        <label>GitHub Release Download URL *</label>
+        <input id="releaseUrl" type="url" placeholder="https://github.com/user/repo/releases/download/v1.0/app.exe">
+        <label style="display:flex;align-items:center;gap:8px"><input id="publish" type="checkbox" style="width:auto"> Publish immediately</label>
+      </section>
+
+      <div id="msg" class="notice" style="display:none;margin-bottom:15px"></div>
+      <div class="actions">
+        <button class="btn secondary" onclick="location.href='dashboard.html'">Cancel</button>
+        <button id="saveBtn" class="btn primary">Save Windows App</button>
       </div>
-    </section>
-  </aside>
+    </div>
+
+    <aside class="preview-panel">
+      <section class="panel">
+        <h2>PC Preview</h2>
+        <p class="muted" style="font-size:12px">Live Windows Store preview</p>
+        <div class="pc-frame">
+          <div class="pc-screen">
+            <div class="pc-bar"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-title">Palia Win Store</span></div>
+            <div class="store-head">
+              <img class="store-mini-logo" src="assets/palia-win-store-icon.svg" alt="">
+              <div class="store-name">Palia Win Store</div>
+              <div class="store-nav">Home · Categories · Latest</div>
+            </div>
+            <div class="app-hero" id="pvBanner"><div class="hero-placeholder">Banner Preview</div></div>
+            <div class="app-info">
+              <div class="app-title-row">
+                <div id="pvIcon" class="app-icon-preview app-icon-placeholder">APP ICON</div>
+                <div><div id="pvName" class="p-title">Your App Name</div><div id="pvMeta" class="p-meta">Version — · Utilities · Windows</div></div>
+              </div>
+              <div id="pvDesc" class="p-desc">Your app description will appear here.</div>
+              <div class="p-download">Download for Windows</div>
+              <div class="p-shots-title">Screenshots</div>
+              <div id="pvShots" class="p-shots">
+                <div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="monitor-stand"></div><div class="monitor-base"></div>
+        </div>
+      </section>
+    </aside>
   </div>
 </main>
 

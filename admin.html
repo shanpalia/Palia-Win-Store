@@ -34,12 +34,20 @@
     @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
     @media(max-width:520px){.grid{grid-template-columns:1fr}.top{padding:0 15px}.wrap{padding:20px 14px}}
   </style>
+
+<style>
+.pws-header-brand{display:flex!important;align-items:center!important;gap:9px!important;text-decoration:none!important;color:#111827!important}
+.pws-header-brand img{width:40px!important;height:40px!important;object-fit:cover!important;border-radius:10px!important;display:block!important}
+.pws-header-brand .pws-name{font-size:18px!important;font-weight:850!important;line-height:1.05!important}
+.pws-header-brand .pws-name .win{color:#118bd2!important}
+.pws-header-brand .pws-by{display:block!important;font-size:8px!important;font-weight:700!important;color:#64748b!important;letter-spacing:.25px!important;margin-top:3px!important}
+</style>
 </head>
 <body>
-<header class="top">
-  <div class="brand"><div class="logo">PW</div><span>Palia Win Store <small style="color:#64748b;font-weight:600">Admin</small></span></div>
-  <button id="logoutBtn" class="muted hidden">Logout</button>
-</header>
+<header class="top"><a class="pws-header-brand" href="index.html">
+<img src="assets/palia-win-store-branding-same.png" alt="Palia Win Store">
+<span><span class="pws-name">Palia <span class="win">Win Store</span></span><span class="pws-by">BY SHANPALIA</span></span>
+</a></header>
 
 <section id="loginView" class="login">
   <h1>Admin Login</h1>

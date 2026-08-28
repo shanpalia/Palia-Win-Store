@@ -38,11 +38,22 @@ textarea{min-height:145px;resize:vertical}.drop{border:2px dashed #cbd5e1;border
 .p-shots-title{font-size:12px;font-weight:800;margin:18px 0 8px}.p-shots{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.p-shot{aspect-ratio:16/10;background:#eef2f7;border-radius:5px;overflow:hidden}.p-shot img{width:100%;height:100%;object-fit:cover}.monitor-stand{width:115px;height:9px;background:#cbd5e1;margin:0 auto;border-radius:0 0 8px 8px}.monitor-base{width:150px;height:7px;background:#b8c2d0;margin:4px auto 0;border-radius:10px}
 @media(max-width:950px){.add-layout{grid-template-columns:1fr}.preview-panel{position:static}}
 </style>
+
+<style>
+.pws-header-brand{display:flex!important;align-items:center!important;gap:9px!important;text-decoration:none!important;color:#111827!important}
+.pws-header-brand img{width:40px!important;height:40px!important;object-fit:cover!important;border-radius:10px!important;display:block!important}
+.pws-header-brand .pws-name{font-size:18px!important;font-weight:850!important;line-height:1.05!important}
+.pws-header-brand .pws-name .win{color:#118bd2!important}
+.pws-header-brand .pws-by{display:block!important;font-size:8px!important;font-weight:700!important;color:#64748b!important;letter-spacing:.25px!important;margin-top:3px!important}
+</style>
 </head>
 
 <body>
 <aside id="side" class="side">
-  <h3 style="padding:0 10px">Palia Win Store</h3>
+  <a class="pws-header-brand" href="index.html" style="margin:4px 8px 18px">
+<img src="assets/palia-win-store-branding-same.png" alt="Palia Win Store">
+<span><span class="pws-name">Palia <span class="win">Win Store</span></span><span class="pws-by">BY SHANPALIA</span></span>
+</a>
   <button class="nav" onclick="goHome()">🏠 Home</button>
   <button class="nav" onclick="location.href='dashboard.html'">📊 Dashboard</button>
   <button class="nav" onclick="location.href='add-app.html'">➕ Add App</button>
@@ -51,10 +62,10 @@ textarea{min-height:145px;resize:vertical}.drop{border:2px dashed #cbd5e1;border
 </aside>
 <div id="overlay" class="overlay"></div>
 
-<header class="top">
-  <button id="menu" class="menu" aria-label="Open menu">☰</button>
-  <div class="brand">Palia Win Store <span class="subbrand">/ Add Windows App</span></div>
-</header>
+<header class="top"><button id="menu" class="menu" aria-label="Open menu">☰</button><a class="pws-header-brand" href="index.html">
+<img src="assets/palia-win-store-branding-same.png" alt="Palia Win Store">
+<span><span class="pws-name">Palia <span class="win">Win Store</span></span><span class="pws-by">BY SHANPALIA</span></span>
+</a></header>
 
 <main class="wrap">
   <div style="margin-bottom:22px">

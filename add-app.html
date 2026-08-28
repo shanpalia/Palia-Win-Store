@@ -40,32 +40,44 @@ textarea{min-height:145px;resize:vertical}.drop{border:2px dashed #cbd5e1;border
 </style>
 
 <style>
-.pws-header-brand{display:flex!important;align-items:center!important;gap:9px!important;text-decoration:none!important;color:#111827!important}
-.pws-header-brand img{width:40px!important;height:40px!important;object-fit:cover!important;border-radius:10px!important;display:block!important}
-.pws-header-brand .pws-name{font-size:18px!important;font-weight:850!important;line-height:1.05!important}
-.pws-header-brand .pws-name .win{color:#118bd2!important}
-.pws-header-brand .pws-by{display:block!important;font-size:8px!important;font-weight:700!important;color:#64748b!important;letter-spacing:.25px!important;margin-top:3px!important}
+.pws-header{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:14px;padding:0 22px;position:sticky;top:0;z-index:10}
+.pws-menu{width:44px;height:44px;border:0;border-radius:11px;background:#eef2f7;cursor:pointer;font-size:23px;display:grid;place-items:center;flex:none}
+.pws-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:#111827}
+.pws-brand img{width:40px;height:40px;object-fit:contain;display:block;border-radius:10px}
+.pws-brand-text{display:flex;flex-direction:column;line-height:1.02}
+.pws-brand-name{font-size:18px;font-weight:850;letter-spacing:-.2px}
+.pws-brand-name .win{color:#118bd2}
+.pws-brand-by{font-size:8px;font-weight:700;color:#64748b;letter-spacing:.35px;margin-top:4px}
+.pws-side{position:fixed;left:0;top:0;bottom:0;width:270px;background:#fff;border-right:1px solid #e5e7eb;z-index:100;padding:18px 14px;transform:translateX(-100%);transition:transform .22s ease;box-shadow:12px 0 35px transparent}
+.pws-side.open{transform:translateX(0);box-shadow:12px 0 35px rgba(0,0,0,.12)}
+.pws-side-head{display:flex;align-items:center;gap:9px;padding:2px 8px 15px;border-bottom:1px solid #eef2f7;margin-bottom:12px}
+.pws-side-head img{width:40px;height:40px;object-fit:contain;border-radius:10px}
+.pws-side-head .name{font-size:16px;font-weight:850}.pws-side-head .by{font-size:7px;color:#64748b;font-weight:700;display:block;margin-top:3px}
+.pws-close{margin-left:auto;width:34px;height:34px;border:0;border-radius:9px;background:#eef2f7;font-size:20px;cursor:pointer}
+.pws-nav{width:100%;border:0;background:transparent;text-align:left;padding:13px 12px;border-radius:10px;cursor:pointer;font:inherit;font-weight:650;color:#334155;margin:2px 0}
+.pws-nav:hover{background:#f1f5f9}.pws-nav.logout{color:#b91c1c}
+.pws-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:90}.pws-overlay.show{display:block}
 </style>
 </head>
 
 <body>
-<aside id="side" class="side">
-  <a class="pws-header-brand" href="index.html" style="margin:4px 8px 18px">
-<img src="assets/palia-win-store-branding-same.png" alt="Palia Win Store">
-<span><span class="pws-name">Palia <span class="win">Win Store</span></span><span class="pws-by">BY SHANPALIA</span></span>
-</a>
-  <button class="nav" onclick="goHome()">🏠 Home</button>
-  <button class="nav" onclick="location.href='dashboard.html'">📊 Dashboard</button>
-  <button class="nav" onclick="location.href='add-app.html'">➕ Add App</button>
-  <button class="nav" onclick="location.href='manage-app.html'">📦 Manage App</button>
-  <button class="nav" onclick="logout()">🚪 Logout</button>
-</aside>
-<div id="overlay" class="overlay"></div>
 
-<header class="top"><button id="menu" class="menu" aria-label="Open menu">☰</button><a class="pws-header-brand" href="index.html">
-<img src="assets/palia-win-store-branding-same.png" alt="Palia Win Store">
-<span><span class="pws-name">Palia <span class="win">Win Store</span></span><span class="pws-by">BY SHANPALIA</span></span>
-</a></header>
+<aside id="pwsSide" class="pws-side">
+  <div class="pws-side-head">
+    <img src="assets/palia-win-store-icon.png" alt="">
+    <div><div class="name">Palia Win Store</div><span class="by">BY SHANPALIA</span></div>
+    <button id="pwsClose" class="pws-close" aria-label="Close menu">×</button>
+  </div>
+  <button class="pws-nav" id="pwsHome">🏠 Home</button>
+  <button class="pws-nav" id="pwsDashboard">📊 Dashboard</button>
+  <button class="pws-nav" id="pwsAdd">➕ Add App</button>
+  <button class="pws-nav" id="pwsManage">📦 Manage App</button>
+  <button class="pws-nav logout" id="pwsLogout">🚪 Logout</button>
+</aside>
+<div id="pwsOverlay" class="pws-overlay"></div>
+
+<header class="pws-header"><button id="pwsMenu" class="pws-menu" aria-label="Open menu">☰</button>
+<a class="pws-brand" href="index.html"><img src="assets/palia-win-store-icon.png" alt=""><span class="pws-brand-text"><span class="pws-brand-name">Palia <span class="win">Win Store</span></span><span class="pws-brand-by">BY SHANPALIA</span></span></a></header>
 
 <main class="wrap">
   <div style="margin-bottom:22px">
@@ -295,6 +307,21 @@ $("saveBtn").onclick=()=>{
   $("msg").style.display="block";$("msg").className="notice success";
   $("msg").textContent="App information saved in this browser. Connect the GitHub/Firebase upload backend before publishing the actual files.";
 };
+</script>
+
+<script>
+(function(){
+  const side=document.getElementById("pwsSide"), overlay=document.getElementById("pwsOverlay");
+  const open=()=>{if(side){side.classList.add("open");overlay&&overlay.classList.add("show")}};
+  const close=()=>{if(side){side.classList.remove("open");overlay&&overlay.classList.remove("show")}};
+  const bind=(id,fn)=>{const e=document.getElementById(id);if(e)e.addEventListener("click",fn)};
+  bind("pwsMenu",open); bind("pwsClose",close); bind("pwsOverlay",close);
+  bind("pwsHome",()=>{sessionStorage.removeItem("pws_admin_session");location.href="index.html"});
+  bind("pwsDashboard",()=>location.href="dashboard.html");
+  bind("pwsAdd",()=>location.href="add-app.html");
+  bind("pwsManage",()=>location.href="manage-app.html");
+  bind("pwsLogout",()=>{sessionStorage.removeItem("pws_admin_session");location.href="admin.html"});
+})();
 </script>
 </body>
 </html>

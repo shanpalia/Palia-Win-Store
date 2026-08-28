@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Palia Win Store</title>
+    <meta name="description" content="Palia Win Store — Your Windows Apps Store" />
+    <meta property="og:title" content="Palia Win Store" />
+    <meta property="og:description" content="Palia Win Store — Your Windows Apps Store" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/Palia-Win-Store/favicon.ico" />
+
+    <!-- Hidden admin access: 5 quick clicks on the Palia Win Store branding -->
+    <script>
+      (function () {
+        let clicks = 0;
+        let timer = null;
+
+        document.addEventListener("click", function (event) {
+          // The React header is rendered after page load, so detect the
+          // Palia Win Store branding dynamically rather than relying on a
+          // fixed element id.
+          const path = typeof event.composedPath === "function"
+            ? event.composedPath()
+            : [event.target];
+
+          const brandingElement = path.find(function (el) {
+            return el && el.nodeType === 1 &&
+              typeof el.textContent === "string" &&
+              /Palia\s+Win\s+Store/i.test(el.textContent) &&
+              el.textContent.trim().length < 120;
+          });
+
+          if (!brandingElement) return;
+
+          clicks++;
+
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            clicks = 0;
+          }, 2000);
+
+          if (clicks >= 5) {
+            clicks = 0;
+            window.location.href = "/Palia-Win-Store/admin.html";
+          }
+        }, true);
+      })();
+    </script>
+
+    <script type="module" crossorigin src="/Palia-Win-Store/assets/index-3zhsoKXn.js"></script>
+    <link rel="stylesheet" crossorigin href="/Palia-Win-Store/assets/index-DBtPLB31.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

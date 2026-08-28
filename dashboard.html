@@ -103,6 +103,21 @@ input,textarea,select{width:100%;padding:12px 13px;border:1px solid #d7dde7;bord
   </div>
 </div>
 
+
+<script>
+(function(){
+  const side=document.getElementById("side");
+  const overlay=document.getElementById("overlay");
+  const hamb=document.getElementById("hamb");
+  const close=document.getElementById("closeMenu");
+  function openMenu(){side.classList.add("open");overlay.classList.add("show");}
+  function closeMenu(){side.classList.remove("open");overlay.classList.remove("show");}
+  if(hamb) hamb.addEventListener("click",openMenu);
+  if(close) close.addEventListener("click",closeMenu);
+  if(overlay) overlay.addEventListener("click",closeMenu);
+})();
+</script>
+
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";

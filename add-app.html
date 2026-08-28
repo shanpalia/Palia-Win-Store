@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Palia Win Store — Add Windows App</title>
+<link rel="icon" href="assets/palia-win-store-icon.svg">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f6f8fc;color:#111827;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+.top{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 22px;gap:14px;position:sticky;top:0;z-index:5}
+.menu{font-size:23px;background:#eef2f7;border:0;border-radius:10px;padding:8px 11px;cursor:pointer}.brand{font-weight:800;font-size:19px}.subbrand{font-size:12px;color:#64748b;font-weight:600}
+.wrap{max-width:1150px;margin:auto;padding:28px 20px}.panel{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:24px;margin-bottom:18px}
+h1,h2{margin:0 0 8px}.muted{color:#64748b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:750;margin:15px 0 7px}
+input,textarea,select{width:100%;padding:12px 13px;border:1px solid #d6dce6;border-radius:11px;background:#fff;font:inherit;outline:none}
+textarea{min-height:145px;resize:vertical}.drop{border:2px dashed #cbd5e1;border-radius:15px;padding:20px;text-align:center;background:#fafbfe}
+.drop input{display:none}.drop label{display:block;margin:0;cursor:pointer}.drop strong{display:block;margin-bottom:5px}.file-name{font-size:12px;color:#64748b;margin-top:8px;word-break:break-word}
+.preview{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}.shot{aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:#eef2f7;border:1px solid #e5e7eb;position:relative}.shot img{width:100%;height:100%;object-fit:cover}.shot span{position:absolute;bottom:4px;left:5px;background:#111b;color:#fff;border-radius:5px;padding:2px 5px;font-size:10px}
+.actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:12px 18px;font-weight:750;cursor:pointer}.primary{background:#111827;color:#fff}.secondary{background:#eef2f7;color:#334155}
+.notice{padding:13px 15px;border-radius:11px;background:#f1f5f9;color:#475569;font-size:13px;line-height:1.5}.success{background:#dcfce7;color:#166534}.error{background:#fee2e2;color:#991b1b}
+.airow{display:grid;grid-template-columns:1fr auto;gap:10px}.side{position:fixed;inset:0 auto 0 0;width:255px;background:#fff;border-right:1px solid #e5e7eb;padding:20px 14px;z-index:20;transform:translateX(-100%);transition:.2s}.side.open{transform:none;box-shadow:12px 0 35px #0002}.nav{width:100%;border:0;background:transparent;text-align:left;padding:13px;border-radius:10px;cursor:pointer;font-weight:650}.nav:hover{background:#f1f5f9}.overlay{position:fixed;inset:0;background:#0004;z-index:15;display:none}.overlay.show{display:block}
+@media(max-width:750px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.preview{grid-template-columns:repeat(2,1fr)}}
+
+.shots-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:10px}.shot-upload{border:1px solid #dce2eb;border-radius:13px;padding:13px;background:#fafbfe}.slot-title{font-weight:750;font-size:13px;margin-bottom:10px}.choose{display:block;text-align:center;padding:10px;border-radius:9px;background:#eef2f7;color:#334155;cursor:pointer;font-size:12px;font-weight:700;margin:0}.choose input{display:none}.remove-shot{width:100%;margin-top:8px;padding:8px;border:0;border-radius:8px;background:#fee2e2;color:#b91c1c;font-weight:700;cursor:pointer}.preview{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}.shot{aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:#eef2f7;border:1px solid #e5e7eb;position:relative}.shot img{width:100%;height:100%;object-fit:cover}.shot span{position:absolute;bottom:4px;left:5px;background:#111b;color:#fff;border-radius:5px;padding:2px 5px;font-size:10px}@media(max-width:1000px){.shots-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.shots-grid{grid-template-columns:1fr 1fr}.preview{grid-template-columns:repeat(2,1fr)}}
+
+.add-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(390px,.85fr);gap:20px;align-items:start}
+.preview-panel{position:sticky;top:88px}
+.pc-frame{background:#dfe5ee;border:1px solid #cbd5e1;border-radius:18px;padding:10px;box-shadow:0 18px 45px #0002}
+.pc-screen{background:#fff;border-radius:11px;overflow:hidden;min-height:610px;border:1px solid #cbd5e1}
+.pc-bar{height:34px;background:#f1f5f9;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;padding:0 11px;gap:6px}
+.pc-dot{width:8px;height:8px;border-radius:50%;background:#cbd5e1}.pc-title{margin-left:7px;font-size:10px;color:#64748b;font-weight:700}
+.store-head{padding:15px 18px;border-bottom:1px solid #eef2f7;display:flex;align-items:center;gap:9px}.store-mini-logo{width:28px;height:28px;border-radius:8px;object-fit:cover}
+.store-name{font-size:13px;font-weight:800}.store-nav{margin-left:auto;font-size:9px;color:#64748b}
+.app-hero{height:150px;background:#e9eef5;position:relative;overflow:hidden}.app-hero img{width:100%;height:100%;object-fit:cover}.hero-placeholder{height:100%;display:grid;place-items:center;color:#94a3b8;font-size:12px;font-weight:700}
+.app-info{padding:17px 19px}.app-title-row{display:flex;gap:12px;align-items:center}.app-icon-preview{width:62px;height:62px;border-radius:14px;background:#e8edf4;object-fit:cover;border:1px solid #dce3ec}.app-icon-placeholder{display:grid;place-items:center;color:#94a3b8;font-size:11px}
+.p-title{font-size:19px;font-weight:850}.p-meta{font-size:10px;color:#64748b;margin-top:5px}.p-desc{font-size:11px;line-height:1.55;color:#475569;margin-top:16px;white-space:pre-line;max-height:100px;overflow:hidden}
+.p-download{margin-top:15px;background:#111827;color:#fff;border-radius:8px;padding:9px 13px;display:inline-block;font-size:10px;font-weight:800}
+.p-shots-title{font-size:12px;font-weight:800;margin:18px 0 8px}.p-shots{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.p-shot{aspect-ratio:16/10;background:#eef2f7;border-radius:5px;overflow:hidden}.p-shot img{width:100%;height:100%;object-fit:cover}.monitor-stand{width:115px;height:9px;background:#cbd5e1;margin:0 auto;border-radius:0 0 8px 8px}.monitor-base{width:150px;height:7px;background:#b8c2d0;margin:4px auto 0;border-radius:10px}
+@media(max-width:950px){.add-layout{grid-template-columns:1fr}.preview-panel{position:static}}
+</style>
+</head>
+
+<body>
+<aside id="side" class="side">
+  <h3 style="padding:0 10px">Palia Win Store</h3>
+  <button class="nav" onclick="goHome()">🏠 Home</button>
+  <button class="nav" onclick="location.href='dashboard.html'">📊 Dashboard</button>
+  <button class="nav" onclick="location.href='add-app.html'">➕ Add App</button>
+  <button class="nav" onclick="location.href='manage-app.html'">📦 Manage App</button>
+  <button class="nav" onclick="logout()">🚪 Logout</button>
+</aside>
+<div id="overlay" class="overlay"></div>
+
+<header class="top">
+  <button id="menu" class="menu" aria-label="Open menu">☰</button>
+  <div class="brand">Palia Win Store <span class="subbrand">/ Add Windows App</span></div>
+</header>
+
+<main class="wrap">
+  <div style="margin-bottom:22px">
+    <h1>Add Windows App</h1>
+    <p class="muted">Add app information on the left and see the complete Store preview on the right.</p>
+  </div>
+
+  <div class="add-layout">
+    <div class="form-column">
+
+      <section class="panel">
+        <h2>Basic Information</h2>
+        <div class="grid">
+          <div><label>App Name *</label><input id="name" placeholder="Example: Palia PDF Tools"></div>
+          <div><label>Version *</label><input id="version" placeholder="1.0.0"></div>
+          <div><label>Category</label><select id="category">
+<option>Utilities</option>
+<option>Productivity</option>
+<option>Business</option>
+<option>Education</option>
+<option>Developer Tools</option>
+<option>Design & Graphics</option>
+<option>Photo & Video</option>
+<option>Music & Audio</option>
+<option>Internet & Communication</option>
+<option>Security</option>
+<option>System Tools</option>
+<option>File Management</option>
+<option>Office & Documents</option>
+<option>Finance</option>
+<option>Health & Fitness</option>
+<option>Games</option>
+<option>Entertainment</option>
+<option>Browsers</option>
+<option>Customization</option>
+<option>Utilities</option>
+<option>Other</option>
+</select></div>
+          <div><label>Developer</label><input id="developer" placeholder="Developer name"></div>
+          <div class="full"><label>Short tagline</label><input id="tagline" placeholder="One-line description"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>App Media</h2>
+        <div class="grid">
+          <div>
+            <label>App Icon *</label>
+            <div class="drop"><label for="icon"><strong>🖼️ Choose app icon</strong><span class="muted">PNG / JPG / WEBP</span><input id="icon" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="iconName" class="file-name"></div></div>
+          </div>
+          <div>
+            <label>Windows Installer *</label>
+            <div class="drop"><label for="installer"><strong>🪟 Choose .EXE / .MSI / .ZIP</strong><span class="muted">Windows application package</span><input id="installer" type="file" accept=".exe,.msi,.zip,application/zip"></label><div id="installerName" class="file-name"></div></div>
+          </div>
+          <div class="full">
+            <label>Store Banner</label>
+            <div class="drop"><label for="banner"><strong>🖼️ Choose banner</strong><span class="muted">Recommended 1200 × 500</span><input id="banner" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="bannerName" class="file-name"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>App Screenshots — 5 Slots</h2>
+        <p class="muted">Upload each screenshot separately. Remove any screenshot individually.</p>
+        <div class="shots-grid">
+          <div class="shot-upload"><div class="slot-title">Screenshot 1</div><label for="screen1" class="choose">＋ Add Screenshot<input id="screen1" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen1">Remove</button><div id="screen1Name" class="file-name"></div></div>
+          <div class="shot-upload"><div class="slot-title">Screenshot 2</div><label for="screen2" class="choose">＋ Add Screenshot<input id="screen2" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen2">Remove</button><div id="screen2Name" class="file-name"></div></div>
+          <div class="shot-upload"><div class="slot-title">Screenshot 3</div><label for="screen3" class="choose">＋ Add Screenshot<input id="screen3" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen3">Remove</button><div id="screen3Name" class="file-name"></div></div>
+          <div class="shot-upload"><div class="slot-title">Screenshot 4</div><label for="screen4" class="choose">＋ Add Screenshot<input id="screen4" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen4">Remove</button><div id="screen4Name" class="file-name"></div></div>
+          <div class="shot-upload"><div class="slot-title">Screenshot 5</div><label for="screen5" class="choose">＋ Add Screenshot<input id="screen5" type="file" accept="image/png,image/jpeg,image/webp"></label><button type="button" class="remove-shot" data-remove="screen5">Remove</button><div id="screen5Name" class="file-name"></div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>AI Description</h2>
+        <p class="muted">Generate a professional description from the app information.</p>
+        <label>AI API Key <span class="muted">(optional; used only in this browser session)</span></label>
+        <input id="aiKey" type="password" placeholder="Gemini API key">
+        <label>Description</label>
+        <div class="airow">
+          <textarea id="description" placeholder="Click Generate with AI, or write the description manually."></textarea>
+          <button id="aiBtn" class="btn secondary" style="align-self:start">✨ Generate with AI</button>
+        </div>
+        <div id="aiMsg" class="notice" style="margin-top:12px;display:none"></div>
+      </section>
+
+      <section class="panel">
+        <h2>GitHub Release</h2>
+        <p class="muted">Use the GitHub Release asset URL for the Windows installer.</p>
+        <label>GitHub Release Download URL *</label>
+        <input id="releaseUrl" type="url" placeholder="https://github.com/user/repo/releases/download/v1.0/app.exe">
+        <label style="display:flex;align-items:center;gap:8px"><input id="publish" type="checkbox" style="width:auto"> Publish immediately</label>
+      </section>
+
+      <div id="msg" class="notice" style="display:none;margin-bottom:15px"></div>
+      <div class="actions">
+        <button class="btn secondary" onclick="location.href='dashboard.html'">Cancel</button>
+        <button id="saveBtn" class="btn primary">Save Windows App</button>
+      </div>
+    </div>
+
+    <aside class="preview-panel">
+      <section class="panel">
+        <h2>PC Preview</h2>
+        <p class="muted" style="font-size:12px">Live Windows Store preview</p>
+        <div class="pc-frame">
+          <div class="pc-screen">
+            <div class="pc-bar"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-title">Palia Win Store</span></div>
+            <div class="store-head">
+              <img class="store-mini-logo" src="assets/palia-win-store-icon.svg" alt="">
+              <div class="store-name">Palia Win Store</div>
+              <div class="store-nav">Home · Categories · Latest</div>
+            </div>
+            <div class="app-hero" id="pvBanner"><div class="hero-placeholder">Banner Preview</div></div>
+            <div class="app-info">
+              <div class="app-title-row">
+                <div id="pvIcon" class="app-icon-preview app-icon-placeholder">APP ICON</div>
+                <div><div id="pvName" class="p-title">Your App Name</div><div id="pvMeta" class="p-meta">Version — · Utilities · Windows</div></div>
+              </div>
+              <div id="pvDesc" class="p-desc">Your app description will appear here.</div>
+              <div class="p-download">Download for Windows</div>
+              <div class="p-shots-title">Screenshots</div>
+              <div id="pvShots" class="p-shots">
+                <div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div><div class="p-shot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="monitor-stand"></div><div class="monitor-base"></div>
+        </div>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+$("menu").onclick=()=>{$("side").classList.add("open");$("overlay").classList.add("show")};
+$("overlay").onclick=()=>{$("side").classList.remove("open");$("overlay").classList.remove("show")};
+
+function goHome(){ sessionStorage.removeItem("pws_admin_session"); location.href="index.html"; }
+function logout(){ sessionStorage.removeItem("pws_admin_session"); location.href="admin.html"; }
+
+function fileName(input,target){
+  const f=input.files[0]; $(target).textContent=f?f.name:"";
+}
+$("icon").onchange=()=>fileName($("icon"),"iconName");
+$("installer").onchange=()=>fileName($("installer"),"installerName");
+$("banner").onchange=()=>fileName($("banner"),"bannerName");
+function updateScreenshotPreview(){
+  $("preview").innerHTML="";
+  for(let i=1;i<=5;i++){
+    const input=$("screen"+i), f=input.files[0];
+    $("screen"+i+"Name").textContent=f?f.name:"";
+    if(f){
+      const url=URL.createObjectURL(f);
+      $("preview").insertAdjacentHTML("beforeend",`<div class="shot"><img src="${url}" alt="Screenshot ${i}"><span>${i}</span></div>`);
+    }
+  }
+}
+for(let i=1;i<=5;i++) $("screen"+i).onchange=updateScreenshotPreview;
+document.querySelectorAll(".remove-shot").forEach(btn=>btn.onclick=()=>{
+  const input=$(btn.dataset.remove);
+  input.value="";
+  updateScreenshotPreview();
+});
+
+$("aiBtn").onclick=async()=>{
+  const key=$("aiKey").value.trim(),name=$("name").value.trim(),category=$("category").value,tag=$("tagline").value.trim(),dev=$("developer").value.trim();
+  if(!key){showAi("Enter a Gemini API key to generate the description.");return}
+  if(!name){showAi("Enter the App Name first.");return}
+  $("aiBtn").disabled=true;$("aiBtn").textContent="Generating…";
+  try{
+    const prompt=`Write a professional Windows software store description for "${name}". Category: ${category}. Developer: ${dev||"not specified"}. Tagline: ${tag||"not specified"}. Write 120-180 words, clear and factual, no invented specifications, no fake claims, no markdown headings.`;
+    const r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(key),{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+    });
+    const d=await r.json();
+    if(!r.ok) throw new Error(d?.error?.message||"AI request failed");
+    $("description").value=d?.candidates?.[0]?.content?.parts?.[0]?.text||"";
+    showAi("Description generated. Review it before saving.","success");
+  }catch(e){showAi(e.message)}
+  finally{$("aiBtn").disabled=false;$("aiBtn").textContent="✨ Generate with AI"}
+};
+function showAi(t,type){$("aiMsg").style.display="block";$("aiMsg").className="notice "+(type||"");$("aiMsg").textContent=t}
+
+
+function updatePcPreview(){
+  $("pvName").textContent=$("name").value.trim()||"Your App Name";
+  $("pvMeta").textContent="Version "+($("version").value.trim()||"—")+" · "+$("category").value+" · Windows";
+  $("pvDesc").textContent=$("description").value.trim()||"Your AI-generated app description will appear here.";
+  const icon=$("icon").files[0];
+  const iconEl=$("pvIcon");
+  if(icon){iconEl.className="app-icon-preview";iconEl.textContent="";iconEl.innerHTML=`<img src="${URL.createObjectURL(icon)}" style="width:100%;height:100%;object-fit:cover;border-radius:13px">`;}
+  else{iconEl.className="app-icon-preview app-icon-placeholder";iconEl.textContent="APP ICON";iconEl.innerHTML="APP ICON";}
+  const banner=$("banner").files[0], hero=$("pvBanner");
+  if(banner){hero.innerHTML=`<img src="${URL.createObjectURL(banner)}" alt="Banner">`;}else{hero.innerHTML='<div class="hero-placeholder">Banner Preview</div>';}
+  const shots=$("pvShots");shots.innerHTML="";
+  for(let i=1;i<=5;i++){
+    const f=$("screen"+i).files[0], box=document.createElement("div");box.className="p-shot";
+    if(f) box.innerHTML=`<img src="${URL.createObjectURL(f)}" alt="Screenshot ${i}">`;
+    shots.appendChild(box);
+  }
+}
+["name","version","category","description","icon","banner","screen1","screen2","screen3","screen4","screen5"].forEach(id=>$(id).addEventListener("input",updatePcPreview));
+
+$("saveBtn").onclick=()=>{
+  const required=[
+    ["name","App Name"],["version","Version"],["icon","App Icon"],["installer","Windows Installer"],["releaseUrl","GitHub Release URL"]
+  ];
+  for(const [id,label] of required){
+    const v=id==="icon"||id==="installer"?$(id).files.length:$(id).value.trim();
+    if(!v){$("msg").style.display="block";$("msg").className="notice error";$("msg").textContent=label+" is required.";return}
+  }
+  if(!/^https:\/\/github\.com\/.+\/releases\/download\/.+/i.test($("releaseUrl").value.trim())){
+    $("msg").style.display="block";$("msg").className="notice error";$("msg").textContent="Please enter a valid GitHub Release download URL.";return;
+  }
+  const screenshots=[]; for(let i=1;i<=5;i++){ const f=$("screen"+i).files[0]; if(f) screenshots.push(f); }
+  const data={
+    name:$("name").value.trim(),version:$("version").value.trim(),category:$("category").value,
+    developer:$("developer").value.trim(),tagline:$("tagline").value.trim(),description:$("description").value.trim(),
+    platform:"Windows",releaseUrl:$("releaseUrl").value.trim(),published:$("publish").checked,
+    screenshots:screenshots.map(f=>f.name),iconFile:$("icon").files[0].name,installerFile:$("installer").files[0].name,
+    savedAt:new Date().toISOString()
+  };
+  localStorage.setItem("pws_pending_app",JSON.stringify(data));
+  $("msg").style.display="block";$("msg").className="notice success";
+  $("msg").textContent="App information saved in this browser. Connect the GitHub/Firebase upload backend before publishing the actual files.";
+};
+</script>
+</body>
+</html>

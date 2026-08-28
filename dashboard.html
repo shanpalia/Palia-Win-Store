@@ -21,6 +21,9 @@ input,textarea,select{width:100%;padding:12px 13px;border:1px solid #d7dde7;bord
 .hidden{display:none!important}.top-actions{display:flex;gap:8px}
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
 @media(max-width:520px){.grid{grid-template-columns:1fr}.top{padding:0 15px}.wrap{padding:20px 14px}}
+
+  .logo-img{width:38px;height:38px;border-radius:11px;display:block}
+
 </style>
 </head>
 
@@ -61,8 +64,8 @@ input,textarea,select{width:100%;padding:12px 13px;border:1px solid #d7dde7;bord
 <div id="loginGate" class="hidden"></div>
 <div class="dash-shell">
   <aside id="side" class="side">
-    <div class="brand"><div class="logo">PW</div><span>Palia Win Store</span><button id="closeMenu" class="menu-close">×</button></div>
-    <button class="navbtn" onclick="location.href='index.html'">🏠 Home</button>
+    <div class="brand"><img class="logo-img" src="assets/palia-win-store-icon.svg" alt="Palia Win Store"><span>Palia Win Store</span><button id="closeMenu" class="menu-close">×</button></div>
+    <button class="navbtn" id="homeBtn">🏠 Home</button>
     <button class="navbtn" onclick="location.href='dashboard.html'">📊 Dashboard</button>
     <button class="navbtn" onclick="location.href='add-app.html'">➕ Add App</button>
     <button class="navbtn" onclick="location.href='manage-app.html'">📦 Manage App</button>
@@ -154,7 +157,7 @@ function render(){
  <div class="app"><div><h3>${esc(a.name)} <span class="badge ${a.published?"published":"draft"}">${a.published?"Published":"Draft"}</span></h3>
  <p>${esc(a.category||"Other")} · v${esc(a.version||"—")}</p></div>
  <div class="actions" style="margin:0"><button class="muted" data-edit="${a.id}">Edit</button><button class="danger" data-del="${a.id}">Delete</button></div></div>`).join(""):'<p class="sub">No apps yet.</p>';
- document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>fill(apps.find(a=>a.id===b.dataset.edit)));
+ document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>location.href="edit-app.html?id="+encodeURIComponent(b.dataset.edit));
  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>remove(b.dataset.del));
 }
 async function load(){
@@ -162,15 +165,20 @@ async function load(){
  try{const s=await getDoc(doc(db,"siteStats","global"));const d=s.exists()?s.data():{};$("visitors").textContent=d.totalVisitors??0;$("downloads").textContent=d.totalDownloads??0;}catch{$("visitors").textContent="—";$("downloads").textContent="—";}
 }
 async function remove(id){const a=apps.find(x=>x.id===id);if(!confirm("Delete "+(a?.name||"this app")+"?"))return;try{await deleteDoc(doc(db,"apps",id));await load();}catch(e){alert(e.message)}}
-$("logout").onclick=()=>signOut(auth).then(()=>location.href="admin.html");
-$("clear").onclick=clearForm;$("search").oninput=render;
-$("save").onclick=async()=>{
- const name=$("appName").value.trim(),url=$("downloadUrl").value.trim();
- if(!name||!url){$("formError").textContent="App name and GitHub Release URL are required.";return}
- if(!/^https:\/\/github\.com\/.+\/releases\/download\/.+/i.test(url)){ $("formError").textContent="Use a GitHub Release download URL.";return}
- const data={name,version:$("version").value.trim(),category:$("category").value,description:$("description").value.trim(),downloadUrl:url,windows_download_url:url,iconUrl:$("iconUrl").value.trim(),published:$("published").checked,platform:"Windows",updatedAt:new Date().toISOString()};
- try{if($("appId").value)await updateDoc(doc(db,"apps",$("appId").value),data);else await addDoc(collection(db,"apps"),{...data,createdAt:new Date().toISOString()});clearForm();await load()}catch(e){$("formError").textContent=e.message}
+
+async function doLogout(){
+  try{ await signOut(auth); }
+  finally{ window.location.href="admin.html"; }
+}
+$("topLogout").onclick=doLogout;
+$("sideLogout").onclick=doLogout;
+$("homeBtn").onclick=async()=>{
+  try{ await signOut(auth); }
+  finally{ window.location.href="index.html"; }
 };
+
+$("search").oninput=render;
+
 onAuthStateChanged(auth,async user=>{
  if(!user){location.href="admin.html";return}
  if(ADMIN_EMAIL!=="YOUR_ADMIN_EMAIL"&&user.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){await signOut(auth);location.href="admin.html";return}

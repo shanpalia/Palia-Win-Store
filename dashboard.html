@@ -23,51 +23,85 @@ input,textarea,select{width:100%;padding:12px 13px;border:1px solid #d7dde7;bord
 @media(max-width:520px){.grid{grid-template-columns:1fr}.top{padding:0 15px}.wrap{padding:20px 14px}}
 </style>
 </head>
+
 <body>
-<header class="top">
-  <div class="brand"><div class="logo">PW</div><span>Palia Win Store <small style="color:#64748b">Admin Dashboard</small></span></div>
-  <div class="top-actions">
-    <button class="muted" onclick="location.href='index.html'">Store</button>
-    <button id="logout" class="danger">Logout</button>
+<style>
+  .dash-shell{display:flex;min-height:100vh}
+  .side{width:255px;background:#fff;border-right:1px solid #e5e7eb;padding:22px 14px;position:fixed;inset:0 auto 0 0;z-index:20;transform:translateX(-100%);transition:.22s}
+  .side.open{transform:translateX(0);box-shadow:12px 0 35px #0001}
+  .side .brand{display:flex;align-items:center;gap:10px;padding:8px 10px 24px;font-weight:800}
+  .side .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#62c7ff,#7c3aed);display:grid;place-items:center;color:#fff;font-size:12px}
+  .navbtn{width:100%;background:transparent;text-align:left;color:#334155;margin:3px 0;padding:13px 12px;border-radius:10px}
+  .navbtn:hover{background:#f1f5f9}.navbtn.logout{color:#b91c1c}
+  .menu-close{float:right;background:#f1f5f9;padding:7px 10px}
+  .overlay{position:fixed;inset:0;background:#0004;z-index:15;display:none}.overlay.show{display:block}
+  .main{width:100%}
+  .top{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:14px;padding:0 22px;position:sticky;top:0;z-index:10}
+  .hamb{font-size:24px;background:#eef2f7;padding:7px 11px}
+  .top-title{font-weight:800;font-size:19px}.spacer{flex:1}
+  .wrap{max-width:1200px;margin:auto;padding:28px 20px}
+  .sub{color:#64748b}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:22px 0}
+  .card,.panel{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px}
+  .label{font-size:13px;color:#64748b}.stat{font-size:29px;font-weight:800;margin-top:7px}
+  .panel{margin-top:18px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .app{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 0;border-bottom:1px solid #eef0f4}
+  .app:last-child{border-bottom:0}.app h3{margin:0 0 5px;font-size:16px}.app p{margin:0;color:#64748b;font-size:13px}
+  .badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;margin-left:7px}
+  .published{background:#dcfce7;color:#166534}.draft{background:#f1f5f9;color:#475569}
+  .icon-btn{width:38px;height:38px;padding:0;border-radius:9px;background:#eef2f7;font-size:17px}
+  .icon-btn.delete{background:#fee2e2;color:#b91c1c}.actions{display:flex;gap:7px}
+  input,textarea,select{width:100%;padding:12px;border:1px solid #d7dde7;border-radius:10px;font:inherit}
+  .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{margin:10px 0}.field.full{grid-column:1/-1}
+  .primary{background:#111827;color:#fff}.muted{background:#eef2f7;color:#334155}.danger{background:#fee2e2;color:#b91c1c}
+  .hidden{display:none!important}
+  @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}.wrap{padding:20px 14px}}
+</style>
+
+<div id="loginGate" class="hidden"></div>
+<div class="dash-shell">
+  <aside id="side" class="side">
+    <div class="brand"><div class="logo">PW</div><span>Palia Win Store</span><button id="closeMenu" class="menu-close">×</button></div>
+    <button class="navbtn" onclick="location.href='index.html'">🏠 Home</button>
+    <button class="navbtn" onclick="location.href='dashboard.html'">📊 Dashboard</button>
+    <button class="navbtn" onclick="location.href='add-app.html'">➕ Add App</button>
+    <button class="navbtn" onclick="location.href='manage-app.html'">📦 Manage App</button>
+    <button id="sideLogout" class="navbtn logout">🚪 Logout</button>
+  </aside>
+  <div id="overlay" class="overlay"></div>
+
+  <div class="main">
+    <header class="top">
+      <button id="hamb" class="hamb" aria-label="Open menu">☰</button>
+      <div class="top-title">Palia Win Store <span style="font-size:13px;color:#64748b;font-weight:600">Admin Dashboard</span></div>
+      <div class="spacer"></div>
+      <button id="topLogout" class="danger">Logout</button>
+    </header>
+
+    <main id="loading" class="wrap"><p class="sub">Checking admin access…</p></main>
+
+    <main id="dashboard" class="wrap hidden">
+      <h1>Dashboard</h1>
+      <p class="sub">Manage your Windows applications and store statistics.</p>
+
+      <div class="grid">
+        <div class="card"><div class="label">Total Visitors</div><div id="visitors" class="stat">—</div></div>
+        <div class="card"><div class="label">Total Apps</div><div id="totalApps" class="stat">0</div></div>
+        <div class="card"><div class="label">Published</div><div id="publishedApps" class="stat">0</div></div>
+        <div class="card"><div class="label">Downloads</div><div id="downloads" class="stat">—</div></div>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2 style="margin:0">App List</h2><p class="sub" style="margin:6px 0 0">Published and draft Windows apps</p></div>
+          <button class="primary" onclick="location.href='add-app.html'">＋ Add App</button>
+        </div>
+        <div style="margin-top:15px"><input id="search" placeholder="Search apps..."></div>
+        <div id="list"></div>
+      </section>
+    </main>
   </div>
-</header>
-
-<main id="loading" class="wrap"><p class="sub">Checking admin access…</p></main>
-
-<main id="dashboard" class="wrap hidden">
-<h1>Admin Dashboard</h1>
-<p class="sub">Manage Windows applications and GitHub Release downloads.</p>
-
-<div class="grid">
-  <div class="card"><div class="label">Total Visitors</div><div id="visitors" class="stat">—</div></div>
-  <div class="card"><div class="label">Total Apps</div><div id="totalApps" class="stat">0</div></div>
-  <div class="card"><div class="label">Published</div><div id="publishedApps" class="stat">0</div></div>
-  <div class="card"><div class="label">Downloads</div><div id="downloads" class="stat">—</div></div>
 </div>
-
-<div class="layout">
-<section class="panel">
-<h2 id="formTitle">Add Windows App</h2>
-<input id="appId" type="hidden">
-<label>App Name</label><input id="appName" placeholder="Windows app name">
-<label>Version</label><input id="version" placeholder="1.0.0">
-<label>Category</label>
-<select id="category"><option>Utilities</option><option>Productivity</option><option>Multimedia</option><option>Tools</option><option>Games</option><option>Other</option></select>
-<label>Description</label><textarea id="description" placeholder="Windows app description"></textarea>
-<label>GitHub Release Download URL</label><input id="downloadUrl" type="url" placeholder="https://github.com/user/repo/releases/download/v1.0/app.exe">
-<label>Icon URL (optional)</label><input id="iconUrl" type="url" placeholder="https://...">
-<label style="display:flex;align-items:center;gap:8px"><input id="published" type="checkbox" style="width:auto"> Publish on Store</label>
-<div class="actions"><button id="save" class="primary">Save App</button><button id="clear" class="muted">Clear</button></div>
-<div id="formError" class="error"></div>
-</section>
-
-<section class="panel">
-<h2>Windows Apps</h2>
-<input id="search" placeholder="Search apps...">
-<div id="list"></div>
-</section>
-</div>
-</main>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";

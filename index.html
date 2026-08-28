@@ -11,39 +11,50 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/Palia-Win-Store/favicon.ico" />
 
-    <!-- Hidden admin access: 5 quick clicks on the Palia Win Store branding -->
+    <!-- Hidden Admin: 5 quick clicks on the Palia Win Store logo/name -->
     <script>
       (function () {
-        let clicks = 0;
-        let timer = null;
+        let count = 0;
+        let resetTimer = null;
+
+        function isBrandClick(target) {
+          let el = target;
+          for (let i = 0; el && i < 8; i++, el = el.parentElement) {
+            const text = (el.textContent || "").replace(/\s+/g, " ").trim();
+
+            // The header/brand normally contains the exact store name.
+            if (/^Palia\s+Win\s+Store(?:\s+.*)?$/i.test(text) && text.length <= 100) {
+              return true;
+            }
+
+            // Also accept common branding/header/logo selectors.
+            if (
+              el.matches &&
+              el.matches(
+                '[aria-label*="Palia" i], [title*="Palia" i], ' +
+                '[class*="brand" i], [class*="logo" i], header'
+              )
+            ) {
+              return true;
+            }
+          }
+          return false;
+        }
 
         document.addEventListener("click", function (event) {
-          // The React header is rendered after page load, so detect the
-          // Palia Win Store branding dynamically rather than relying on a
-          // fixed element id.
-          const path = typeof event.composedPath === "function"
-            ? event.composedPath()
-            : [event.target];
+          if (!isBrandClick(event.target)) return;
 
-          const brandingElement = path.find(function (el) {
-            return el && el.nodeType === 1 &&
-              typeof el.textContent === "string" &&
-              /Palia\s+Win\s+Store/i.test(el.textContent) &&
-              el.textContent.trim().length < 120;
-          });
+          count++;
+          clearTimeout(resetTimer);
 
-          if (!brandingElement) return;
+          resetTimer = setTimeout(function () {
+            count = 0;
+          }, 2500);
 
-          clicks++;
-
-          clearTimeout(timer);
-          timer = setTimeout(function () {
-            clicks = 0;
-          }, 2000);
-
-          if (clicks >= 5) {
-            clicks = 0;
-            window.location.href = "/Palia-Win-Store/admin.html";
+          if (count === 5) {
+            count = 0;
+            clearTimeout(resetTimer);
+            window.location.assign("/Palia-Win-Store/admin.html");
           }
         }, true);
       })();

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Palia Win Store — Admin Dashboard</title>
+<link rel="icon" href="/Palia-Win-Store/favicon.ico">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:#f6f8fc;color:#111827}
+.top{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px}.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#62c7ff,#7c3aed);display:grid;place-items:center;color:#fff;font-size:13px}
+button{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}.primary{background:#111827;color:#fff}.danger{background:#fee2e2;color:#b91c1c}.muted{background:#eef2f7;color:#334155}
+.wrap{max-width:1180px;margin:auto;padding:30px 20px}.sub{color:#64748b}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:24px 0}
+.card,.panel{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px}.label{font-size:13px;color:#64748b}.stat{font-size:28px;font-weight:800;margin-top:7px}
+.layout{display:grid;grid-template-columns:380px 1fr;gap:18px}.panel h2{margin-top:0}label{display:block;font-size:13px;font-weight:700;margin:15px 0 7px}
+input,textarea,select{width:100%;padding:12px 13px;border:1px solid #d7dde7;border-radius:10px;background:#fff;outline:none;font:inherit}textarea{min-height:90px;resize:vertical}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.error{color:#b91c1c;font-size:13px;margin-top:12px}
+.app{display:flex;justify-content:space-between;gap:15px;padding:15px 0;border-bottom:1px solid #eef0f4}.app:last-child{border-bottom:0}
+.app h3{margin:0 0 5px;font-size:16px}.app p{margin:0;color:#64748b;font-size:13px}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;margin-left:7px}.published{background:#dcfce7;color:#166534}.draft{background:#f1f5f9;color:#475569}
+.hidden{display:none!important}.top-actions{display:flex;gap:8px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.top{padding:0 15px}.wrap{padding:20px 14px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><div class="logo">PW</div><span>Palia Win Store <small style="color:#64748b">Admin Dashboard</small></span></div>
+  <div class="top-actions">
+    <button class="muted" onclick="location.href='index.html'">Store</button>
+    <button id="logout" class="danger">Logout</button>
+  </div>
+</header>
+
+<main id="loading" class="wrap"><p class="sub">Checking admin access…</p></main>
+
+<main id="dashboard" class="wrap hidden">
+<h1>Admin Dashboard</h1>
+<p class="sub">Manage Windows applications and GitHub Release downloads.</p>
+
+<div class="grid">
+  <div class="card"><div class="label">Total Visitors</div><div id="visitors" class="stat">—</div></div>
+  <div class="card"><div class="label">Total Apps</div><div id="totalApps" class="stat">0</div></div>
+  <div class="card"><div class="label">Published</div><div id="publishedApps" class="stat">0</div></div>
+  <div class="card"><div class="label">Downloads</div><div id="downloads" class="stat">—</div></div>
+</div>
+
+<div class="layout">
+<section class="panel">
+<h2 id="formTitle">Add Windows App</h2>
+<input id="appId" type="hidden">
+<label>App Name</label><input id="appName" placeholder="Windows app name">
+<label>Version</label><input id="version" placeholder="1.0.0">
+<label>Category</label>
+<select id="category"><option>Utilities</option><option>Productivity</option><option>Multimedia</option><option>Tools</option><option>Games</option><option>Other</option></select>
+<label>Description</label><textarea id="description" placeholder="Windows app description"></textarea>
+<label>GitHub Release Download URL</label><input id="downloadUrl" type="url" placeholder="https://github.com/user/repo/releases/download/v1.0/app.exe">
+<label>Icon URL (optional)</label><input id="iconUrl" type="url" placeholder="https://...">
+<label style="display:flex;align-items:center;gap:8px"><input id="published" type="checkbox" style="width:auto"> Publish on Store</label>
+<div class="actions"><button id="save" class="primary">Save App</button><button id="clear" class="muted">Clear</button></div>
+<div id="formError" class="error"></div>
+</section>
+
+<section class="panel">
+<h2>Windows Apps</h2>
+<input id="search" placeholder="Search apps...">
+<div id="list"></div>
+</section>
+</div>
+</main>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {getAuth,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {getFirestore,collection,getDocs,addDoc,updateDoc,deleteDoc,doc,getDoc} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyCn7GUkOaFO4l0x1zM5mwW4hFkW2ISxR10",
+ authDomain:"shanpalia-apk-hub.firebaseapp.com",
+ projectId:"shanpalia-apk-hub",
+ storageBucket:"shanpalia-apk-hub.firebasestorage.app",
+ messagingSenderId:"270953807883",
+ appId:"1:270953807883:web:c900f4409938f16477870e",
+ measurementId:"G-7BMQEGPY8C"
+};
+const ADMIN_EMAIL="YOUR_ADMIN_EMAIL";
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+let apps=[];
+
+const $=id=>document.getElementById(id);
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function clearForm(){
+ ["appId","appName","version","description","downloadUrl","iconUrl"].forEach(id=>$(id).value="");
+ $("category").value="Utilities";$("published").checked=false;$("formTitle").textContent="Add Windows App";$("save").textContent="Save App";$("formError").textContent="";
+}
+function fill(a){
+ $("appId").value=a.id;$("appName").value=a.name||"";$("version").value=a.version||"";$("category").value=a.category||"Utilities";
+ $("description").value=a.description||"";$("downloadUrl").value=a.downloadUrl||a.windows_download_url||"";$("iconUrl").value=a.iconUrl||"";$("published").checked=!!a.published;
+ $("formTitle").textContent="Edit Windows App";$("save").textContent="Update App";scrollTo({top:0,behavior:"smooth"});
+}
+function render(){
+ const q=$("search").value.toLowerCase().trim(), rows=apps.filter(a=>(a.name||"").toLowerCase().includes(q));
+ $("totalApps").textContent=apps.length;$("publishedApps").textContent=apps.filter(a=>a.published).length;
+ $("list").innerHTML=rows.length?rows.map(a=>`
+ <div class="app"><div><h3>${esc(a.name)} <span class="badge ${a.published?"published":"draft"}">${a.published?"Published":"Draft"}</span></h3>
+ <p>${esc(a.category||"Other")} · v${esc(a.version||"—")}</p></div>
+ <div class="actions" style="margin:0"><button class="muted" data-edit="${a.id}">Edit</button><button class="danger" data-del="${a.id}">Delete</button></div></div>`).join(""):'<p class="sub">No apps yet.</p>';
+ document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>fill(apps.find(a=>a.id===b.dataset.edit)));
+ document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>remove(b.dataset.del));
+}
+async function load(){
+ const snap=await getDocs(collection(db,"apps"));apps=snap.docs.map(d=>({id:d.id,...d.data()}));render();
+ try{const s=await getDoc(doc(db,"siteStats","global"));const d=s.exists()?s.data():{};$("visitors").textContent=d.totalVisitors??0;$("downloads").textContent=d.totalDownloads??0;}catch{$("visitors").textContent="—";$("downloads").textContent="—";}
+}
+async function remove(id){const a=apps.find(x=>x.id===id);if(!confirm("Delete "+(a?.name||"this app")+"?"))return;try{await deleteDoc(doc(db,"apps",id));await load();}catch(e){alert(e.message)}}
+$("logout").onclick=()=>signOut(auth).then(()=>location.href="admin.html");
+$("clear").onclick=clearForm;$("search").oninput=render;
+$("save").onclick=async()=>{
+ const name=$("appName").value.trim(),url=$("downloadUrl").value.trim();
+ if(!name||!url){$("formError").textContent="App name and GitHub Release URL are required.";return}
+ if(!/^https:\/\/github\.com\/.+\/releases\/download\/.+/i.test(url)){ $("formError").textContent="Use a GitHub Release download URL.";return}
+ const data={name,version:$("version").value.trim(),category:$("category").value,description:$("description").value.trim(),downloadUrl:url,windows_download_url:url,iconUrl:$("iconUrl").value.trim(),published:$("published").checked,platform:"Windows",updatedAt:new Date().toISOString()};
+ try{if($("appId").value)await updateDoc(doc(db,"apps",$("appId").value),data);else await addDoc(collection(db,"apps"),{...data,createdAt:new Date().toISOString()});clearForm();await load()}catch(e){$("formError").textContent=e.message}
+};
+onAuthStateChanged(auth,async user=>{
+ if(!user){location.href="admin.html";return}
+ if(ADMIN_EMAIL!=="YOUR_ADMIN_EMAIL"&&user.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){await signOut(auth);location.href="admin.html";return}
+ $("loading").classList.add("hidden");$("dashboard").classList.remove("hidden");await load();
+});
+</script>
+</body>
+</html>

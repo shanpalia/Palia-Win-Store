@@ -1,74 +1,66 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Palia Win Store — Dashboard</title><link rel="icon" href="favicon.ico">
 <style>
-.pws-header{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:14px;padding:0 22px;position:sticky;top:0;z-index:10}
-.pws-menu{width:44px;height:44px;border:0;border-radius:11px;background:#eef2f7;cursor:pointer;font-size:23px;display:grid;place-items:center;flex:none}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:#f6f8fc;color:#111827}
+.pws-header{height:70px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:14px;padding:0 22px;position:sticky;top:0;z-index:100}
+.pws-menu{width:44px;height:44px;border:0;border-radius:11px;background:#eef2f7;cursor:pointer;font-size:23px;display:grid;place-items:center;flex:none;position:relative;z-index:120}
 .pws-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:#111827}
-.pws-brand img{width:40px;height:40px;object-fit:contain;display:block;border-radius:10px}
+.pws-brand img{width:42px;height:42px;object-fit:contain;display:block}
 .pws-brand-text{display:flex;flex-direction:column;line-height:1.02}
-.pws-brand-name{font-size:18px;font-weight:850;letter-spacing:-.2px}
-.pws-brand-name .win{color:#118bd2}
+.pws-brand-name{font-size:18px;font-weight:850;letter-spacing:-.2px}.pws-brand-name .win{color:#118bd2}
 .pws-brand-by{font-size:8px;font-weight:700;color:#64748b;letter-spacing:.35px;margin-top:4px}
-.pws-side{position:fixed;left:0;top:0;bottom:0;width:270px;background:#fff;border-right:1px solid #e5e7eb;z-index:100;padding:18px 14px;transform:translateX(-100%);transition:transform .22s ease;box-shadow:12px 0 35px transparent}
-.pws-side.open{transform:translateX(0);box-shadow:12px 0 35px rgba(0,0,0,.12)}
-.pws-side-head{display:flex;align-items:center;gap:9px;padding:2px 8px 15px;border-bottom:1px solid #eef2f7;margin-bottom:12px}
-.pws-side-head img{width:40px;height:40px;object-fit:contain;border-radius:10px}
-.pws-side-head .name{font-size:16px;font-weight:850}.pws-side-head .by{font-size:7px;color:#64748b;font-weight:700;display:block;margin-top:3px}
+.pws-side{position:fixed;left:0;top:0;bottom:0;width:275px;background:#fff;border-right:1px solid #e5e7eb;z-index:1000;padding:18px 14px;transform:translateX(-105%);transition:transform .22s ease;box-shadow:12px 0 35px rgba(0,0,0,0)}
+.pws-side.open{transform:translateX(0);box-shadow:12px 0 35px rgba(0,0,0,.14)}
+.pws-side-head{display:flex;align-items:center;gap:10px;padding:2px 8px 16px;border-bottom:1px solid #eef2f7;margin-bottom:12px}
+.pws-side-head img{width:42px;height:42px;object-fit:contain}.pws-side-head .name{font-size:16px;font-weight:850}.pws-side-head .by{font-size:7px;color:#64748b;font-weight:700;display:block;margin-top:4px}
 .pws-close{margin-left:auto;width:34px;height:34px;border:0;border-radius:9px;background:#eef2f7;font-size:20px;cursor:pointer}
-.pws-nav{width:100%;border:0;background:transparent;text-align:left;padding:13px 12px;border-radius:10px;cursor:pointer;font:inherit;font-weight:650;color:#334155;margin:2px 0}
-.pws-nav:hover{background:#f1f5f9}.pws-nav.logout{color:#b91c1c}
-.pws-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:90}.pws-overlay.show{display:block}
-</style>
-
-<style>
-body{margin:0;background:#f6f8fc;color:#111827;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.pws-nav{width:100%;border:0;background:transparent;text-align:left;padding:13px 12px;border-radius:10px;cursor:pointer;font:inherit;font-weight:650;color:#334155;margin:2px 0}.pws-nav:hover{background:#f1f5f9}.pws-nav.logout{color:#b91c1c}
+.pws-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:900}.pws-overlay.show{display:block}
 .wrap{max-width:1200px;margin:auto;padding:30px 20px}.sub{color:#64748b}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:22px 0}
-.card,.panel{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px}.label{font-size:13px;color:#64748b}.stat{font-size:30px;font-weight:800;margin-top:7px}
-.panel{margin-top:18px}.head{display:flex;justify-content:space-between;align-items:center;gap:12px}.head h2{margin:0}
+.card,.panel{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px}.label{font-size:13px;color:#64748b}.stat{font-size:30px;font-weight:800;margin-top:7px}.panel{margin-top:18px}.head{display:flex;justify-content:space-between;align-items:center;gap:12px}.head h2{margin:0}
 input{width:100%;padding:12px 13px;border:1px solid #d7dde7;border-radius:10px;background:#fff;font:inherit;outline:none}.search{margin-top:15px}
 .app{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:16px 0;border-bottom:1px solid #eef0f4}.app:last-child{border-bottom:0}.app h3{margin:0 0 5px;font-size:16px}.app p{margin:0;color:#64748b;font-size:13px}
 .badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;margin-left:7px}.published{background:#dcfce7;color:#166534}.draft{background:#f1f5f9;color:#475569}
 .actions{display:flex;gap:7px}.icon-btn{width:40px;height:40px;border:0;border-radius:10px;background:#eef2f7;cursor:pointer;font-size:17px}.icon-btn.delete{background:#fee2e2;color:#b91c1c}
-.primary{border:0;border-radius:10px;padding:11px 15px;background:#111827;color:#fff;font-weight:750;cursor:pointer}.hidden{display:none!important}
-.loading{text-align:center;padding:50px;color:#64748b}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.grid{grid-template-columns:1fr}.wrap{padding:20px 14px}}
-</style></head><body>
-<aside id="pwsSide" class="pws-side">
-  <div class="pws-side-head">
-    <img src="assets/palia-win-store-icon.png" alt="">
-    <div><div class="name">Palia Win Store</div><span class="by">BY SHANPALIA</span></div>
-    <button id="pwsClose" class="pws-close" aria-label="Close menu">×</button>
-  </div>
-  <button class="pws-nav" id="pwsHome">🏠 Home</button>
-  <button class="pws-nav" id="pwsDashboard">📊 Dashboard</button>
-  <button class="pws-nav" id="pwsAdd">➕ Add App</button>
-  <button class="pws-nav" id="pwsManage">📦 Manage App</button>
-  <button class="pws-nav logout" id="pwsLogout">🚪 Logout</button>
+.primary{border:0;border-radius:10px;padding:11px 15px;background:#111827;color:#fff;font-weight:750;cursor:pointer}.loading{text-align:center;padding:50px;color:#64748b}.hidden{display:none!important}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.grid{grid-template-columns:1fr}.wrap{padding:20px 14px}.pws-header{padding:0 14px}}
+</style>
+</head><body>
+
+<aside id="pwsSide" class="pws-side" aria-hidden="true">
+ <div class="pws-side-head">
+  <img src="assets/palia-win-store-icon.png" alt="Palia Win Store">
+  <div><div class="name">Palia Win Store</div><span class="by">BY SHANPALIA</span></div>
+  <button id="pwsClose" class="pws-close" type="button" onclick="window.closePwsMenu()">×</button>
+ </div>
+ <button class="pws-nav" type="button" onclick="window.pwsHome()">🏠 Home</button>
+ <button class="pws-nav" type="button" onclick="window.pwsDashboard()">📊 Dashboard</button>
+ <button class="pws-nav" type="button" onclick="window.pwsAdd()">➕ Add App</button>
+ <button class="pws-nav" type="button" onclick="window.pwsManage()">📦 Manage App</button>
+ <button class="pws-nav logout" type="button" onclick="window.pwsLogout()">🚪 Logout</button>
 </aside>
-<div id="pwsOverlay" class="pws-overlay"></div>
-
-<header class="pws-header"><button id="pwsMenu" class="pws-menu" aria-label="Open menu">☰</button>
-<a class="pws-brand" href="index.html"><img src="assets/palia-win-store-icon.png" alt=""><span class="pws-brand-text"><span class="pws-brand-name">Palia <span class="win">Win Store</span></span><span class="pws-brand-by">BY SHANPALIA</span></span></a></header>
-<main id="loading" class="wrap"><div class="loading">Checking admin access…</div></main>
-<main id="dashboard" class="wrap hidden"><h1>Dashboard</h1><p class="sub">Manage your Windows applications and store statistics.</p>
-<div class="grid"><div class="card"><div class="label">Total Visitors</div><div id="visitors" class="stat">—</div></div><div class="card"><div class="label">Total Apps</div><div id="totalApps" class="stat">0</div></div><div class="card"><div class="label">Published</div><div id="publishedApps" class="stat">0</div></div><div class="card"><div class="label">Downloads</div><div id="downloads" class="stat">—</div></div></div>
-<section class="panel"><div class="head"><div><h2>App List</h2><p class="sub" style="margin:6px 0 0">Windows applications</p></div><button id="addTop" class="primary">＋ Add App</button></div><div class="search"><input id="search" placeholder="Search apps..."></div><div id="list"></div></section></main>
-
+<div id="pwsOverlay" class="pws-overlay" onclick="window.closePwsMenu()"></div>
 <script>
-(function(){
-  const side=document.getElementById("pwsSide"), overlay=document.getElementById("pwsOverlay");
-  const open=()=>{if(side){side.classList.add("open");overlay&&overlay.classList.add("show")}};
-  const close=()=>{if(side){side.classList.remove("open");overlay&&overlay.classList.remove("show")}};
-  const bind=(id,fn)=>{const e=document.getElementById(id);if(e)e.addEventListener("click",fn)};
-  bind("pwsMenu",open); bind("pwsClose",close); bind("pwsOverlay",close);
-  bind("pwsHome",()=>{sessionStorage.removeItem("pws_admin_session");location.href="index.html"});
-  bind("pwsDashboard",()=>location.href="dashboard.html");
-  bind("pwsAdd",()=>location.href="add-app.html");
-  bind("pwsManage",()=>location.href="manage-app.html");
-  bind("pwsLogout",()=>{sessionStorage.removeItem("pws_admin_session");location.href="admin.html"});
-})();
+window.openPwsMenu=function(){document.getElementById("pwsSide").classList.add("open");document.getElementById("pwsSide").setAttribute("aria-hidden","false");document.getElementById("pwsOverlay").classList.add("show")};
+window.closePwsMenu=function(){document.getElementById("pwsSide").classList.remove("open");document.getElementById("pwsSide").setAttribute("aria-hidden","true");document.getElementById("pwsOverlay").classList.remove("show")};
+window.pwsHome=function(){sessionStorage.removeItem("pws_admin_session");location.href="index.html"};
+window.pwsDashboard=function(){location.href="dashboard.html"};
+window.pwsAdd=function(){location.href="add-app.html"};
+window.pwsManage=function(){location.href="manage-app.html"};
+window.pwsLogout=function(){sessionStorage.removeItem("pws_admin_session");location.href="admin.html"};
 </script>
 
+<header class="pws-header">
+ <button id="pwsMenu" class="pws-menu" type="button" aria-label="Open menu" onclick="window.openPwsMenu()">☰</button>
+ <a class="pws-brand" href="index.html"><img src="assets/palia-win-store-icon.png" alt="Palia Win Store"><span class="pws-brand-text"><span class="pws-brand-name">Palia <span class="win">Win Store</span></span><span class="pws-brand-by">BY SHANPALIA</span></span></a>
+</header>
+<main id="loading" class="wrap"><div class="loading">Checking admin access…</div></main>
+<main id="dashboard" class="wrap hidden">
+<h1>Dashboard</h1><p class="sub">Manage your Windows applications and store statistics.</p>
+<div class="grid"><div class="card"><div class="label">Total Visitors</div><div id="visitors" class="stat">—</div></div><div class="card"><div class="label">Total Apps</div><div id="totalApps" class="stat">0</div></div><div class="card"><div class="label">Published</div><div id="publishedApps" class="stat">0</div></div><div class="card"><div class="label">Downloads</div><div id="downloads" class="stat">—</div></div></div>
+<section class="panel"><div class="head"><div><h2>App List</h2><p class="sub" style="margin:6px 0 0">Windows applications</p></div><button class="primary" type="button" onclick="location.href='add-app.html'">＋ Add App</button></div>
+<div class="search"><input id="search" placeholder="Search apps..."></div><div id="list"></div></section>
+</main>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -77,7 +69,8 @@ const firebaseConfig={apiKey:"AIzaSyCn7GUkOaFO4l0x1zM5mwW4hFkW2ISxR10",authDomai
 const ADMIN_EMAIL="YOUR_ADMIN_EMAIL",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);let apps=[];
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 async function load(){const snap=await getDocs(collection(db,"apps"));apps=snap.docs.map(d=>({id:d.id,...d.data()}));render();try{const st=await getDoc(doc(db,"siteStats","global")),d=st.exists()?st.data():{};visitors.textContent=d.totalVisitors??0;downloads.textContent=d.totalDownloads??0}catch{}}
-function render(){const q=search.value.trim().toLowerCase(),rows=apps.filter(a=>(a.name||"").toLowerCase().includes(q));totalApps.textContent=apps.length;publishedApps.textContent=apps.filter(a=>a.published).length;list.innerHTML=rows.length?rows.map(a=>`<div class="app"><div><h3>${esc(a.name||"Untitled")} <span class="badge ${a.published?"published":"draft"}">${a.published?"Published":"Draft"}</span></h3><p>${esc(a.category||"Other")} · v${esc(a.version||"—")}</p></div><div class="actions"><button class="icon-btn" title="Edit" data-edit="${a.id}">✏️</button><button class="icon-btn delete" title="Delete" data-del="${a.id}">🗑️</button></div></div>`).join(""):'<p class="sub">No apps found.</p>';document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>location.href="edit-app.html?id="+encodeURIComponent(b.dataset.edit));document.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{const a=apps.find(x=>x.id===b.dataset.del);if(!confirm("Delete "+(a?.name||"this app")+"?"))return;await deleteDoc(doc(db,"apps",b.dataset.del));load()})}
-search.oninput=render;addTop.onclick=()=>location.href="add-app.html";
+function render(){const q=search.value.trim().toLowerCase(),rows=apps.filter(a=>(a.name||"").toLowerCase().includes(q));totalApps.textContent=apps.length;publishedApps.textContent=apps.filter(a=>a.published).length;list.innerHTML=rows.length?rows.map(a=>`<div class="app"><div><h3>${esc(a.name||"Untitled")} <span class="badge ${a.published?"published":"draft"}">${a.published?"Published":"Draft"}</span></h3><p>${esc(a.category||"Other")} · v${esc(a.version||"—")}</p></div><div class="actions"><button class="icon-btn" title="Edit" onclick="location.href='edit-app.html?id=${encodeURIComponent(a.id)}'">✏️</button><button class="icon-btn delete" title="Delete" onclick="deleteApp('${a.id}')">🗑️</button></div></div>`).join(""):'<p class="sub">No apps found.</p>'}
+window.deleteApp=async function(id){const a=apps.find(x=>x.id===id);if(!confirm("Delete "+(a?.name||"this app")+"?"))return;try{await deleteDoc(doc(db,"apps",id));await load()}catch(e){alert(e.message)}};
+search.oninput=render;
 onAuthStateChanged(auth,async user=>{if(!user){location.href="admin.html";return}if(ADMIN_EMAIL!=="YOUR_ADMIN_EMAIL"&&user.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){await signOut(auth);location.href="admin.html";return}loading.classList.add("hidden");dashboard.classList.remove("hidden");load().catch(e=>{list.innerHTML="<p class='sub'>Unable to load apps: "+esc(e.message)+"</p>"})});
 </script></body></html>

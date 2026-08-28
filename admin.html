@@ -298,6 +298,7 @@ onAuthStateChanged(auth, async user => {
     return;
   }
 
+  // Successful admin login always opens the Dashboard first.
   window.location.href = "dashboard.html";
 });
 </script>

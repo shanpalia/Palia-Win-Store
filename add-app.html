@@ -129,8 +129,9 @@ textarea{min-height:145px;resize:vertical}.drop{border:2px dashed #cbd5e1;border
             <div class="drop"><label for="icon"><strong>🖼️ Choose app icon</strong><span class="muted">PNG / JPG / WEBP</span><input id="icon" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="iconName" class="file-name"></div></div>
           </div>
           <div>
-            <label>Windows Installer *</label>
-            <div class="drop"><label for="installer"><strong>🪟 Choose .EXE / .MSI / .ZIP</strong><span class="muted">Windows application package</span><input id="installer" type="file" accept=".exe,.msi,.zip,application/zip"></label><div id="installerName" class="file-name"></div></div>
+            <label>Windows Installer</label>
+            <div class="notice">Upload the installer to GitHub Releases and paste its direct download URL in the GitHub Release section below. The installer file itself is not uploaded from this form.</div>
+            <input id="installer" type="file" accept=".exe,.msi,.zip,application/zip" hidden><div id="installerName" class="file-name"></div>
           </div>
           <div class="full">
             <label>Store Banner</label>
@@ -227,15 +228,11 @@ $("icon").onchange=()=>fileName($("icon"),"iconName");
 $("installer").onchange=()=>fileName($("installer"),"installerName");
 $("banner").onchange=()=>fileName($("banner"),"bannerName");
 function updateScreenshotPreview(){
-  $("preview").innerHTML="";
   for(let i=1;i<=5;i++){
     const input=$("screen"+i), f=input.files[0];
     $("screen"+i+"Name").textContent=f?f.name:"";
-    if(f){
-      const url=URL.createObjectURL(f);
-      $("preview").insertAdjacentHTML("beforeend",`<div class="shot"><img src="${url}" alt="Screenshot ${i}"><span>${i}</span></div>`);
-    }
   }
+  updatePcPreview();
 }
 for(let i=1;i<=5;i++) $("screen"+i).onchange=updateScreenshotPreview;
 document.querySelectorAll(".remove-shot").forEach(btn=>btn.onclick=()=>{
@@ -284,30 +281,10 @@ function updatePcPreview(){
 }
 ["name","version","category","description","icon","banner","screen1","screen2","screen3","screen4","screen5"].forEach(id=>$(id).addEventListener("input",updatePcPreview));
 
-$("saveBtn").onclick=()=>{
-  const required=[
-    ["name","App Name"],["version","Version"],["icon","App Icon"],["installer","Windows Installer"],["releaseUrl","GitHub Release URL"]
-  ];
-  for(const [id,label] of required){
-    const v=id==="icon"||id==="installer"?$(id).files.length:$(id).value.trim();
-    if(!v){$("msg").style.display="block";$("msg").className="notice error";$("msg").textContent=label+" is required.";return}
-  }
-  if(!/^https:\/\/github\.com\/.+\/releases\/download\/.+/i.test($("releaseUrl").value.trim())){
-    $("msg").style.display="block";$("msg").className="notice error";$("msg").textContent="Please enter a valid GitHub Release download URL.";return;
-  }
-  const screenshots=[]; for(let i=1;i<=5;i++){ const f=$("screen"+i).files[0]; if(f) screenshots.push(f); }
-  const data={
-    name:$("name").value.trim(),version:$("version").value.trim(),category:$("category").value,
-    developer:$("developer").value.trim(),tagline:$("tagline").value.trim(),description:$("description").value.trim(),
-    platform:"Windows",releaseUrl:$("releaseUrl").value.trim(),published:$("publish").checked,
-    screenshots:screenshots.map(f=>f.name),iconFile:$("icon").files[0].name,installerFile:$("installer").files[0].name,
-    savedAt:new Date().toISOString()
-  };
-  localStorage.setItem("pws_pending_app",JSON.stringify(data));
-  $("msg").style.display="block";$("msg").className="notice success";
-  $("msg").textContent="App information saved in this browser. Connect the GitHub/Firebase upload backend before publishing the actual files.";
-};
+// The Firebase-backed save handler is loaded below from pws-publish.js.
+
 </script>
+<script type="module" src="./pws-publish.js"></script>
 
 <script>
 (function(){

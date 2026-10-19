@@ -1,6 +1,6 @@
 // Public Firebase client configuration for Palia Win Store.
 // Replace ADMIN_EMAIL with the exact email used to sign in through Firebase Authentication.
-export const ADMIN_EMAIL = "SET_ADMIN_EMAIL_HERE";
+export const ADMIN_EMAIL = "shanpalia786@gmail.com";
 export const FIREBASE_CONFIG = {
   apiKey: "AIzaSyCn7GUkOaFO4l0x1zM5mwW4hFkW2ISxR10",
   authDomain: "shanpalia-apk-hub.firebaseapp.com",

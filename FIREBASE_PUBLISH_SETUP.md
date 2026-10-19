@@ -4,7 +4,7 @@ This feature stores app metadata in the separate Firestore collection paliaWinSt
 
 ## Before publishing
 
-1. In pws-config.js, replace SET_ADMIN_EMAIL_HERE with the exact email used by your Firebase Authentication admin account.
+1. In pws-config.js, ADMIN_EMAIL is already set in pws-config.js to "shanpalia786@gmail.com". Confirm this is the verified Firebase Authentication admin account.
 2. Confirm that this email is enabled and verified in Firebase Authentication.
 3. In Firebase Console → Firestore Database → Rules, merge rules for paliaWinStoreApps into your existing rules. Do not replace all existing rules because this Firebase project may be used by other apps.
 
@@ -12,7 +12,7 @@ Example Firestore rules to merge inside your existing match /databases/{database
 
     function isPaliaStoreAdmin() {
       return request.auth != null
-        && request.auth.token.email == "REPLACE_WITH_ADMIN_EMAIL"
+        && request.auth.token.email == "shanpalia786@gmail.com"
         && request.auth.token.email_verified == true;
     }
 
@@ -25,7 +25,7 @@ Example Firestore rules to merge inside your existing match /databases/{database
 
     function isPaliaStoreAdmin() {
       return request.auth != null
-        && request.auth.token.email == "REPLACE_WITH_ADMIN_EMAIL"
+        && request.auth.token.email == "shanpalia786@gmail.com"
         && request.auth.token.email_verified == true;
     }
 
@@ -36,7 +36,7 @@ Example Firestore rules to merge inside your existing match /databases/{database
         && request.resource.contentType.matches('image/(png|jpeg|webp)');
     }
 
-5. Replace REPLACE_WITH_ADMIN_EMAIL in both rules with the same admin email.
+5. Save the merged Firestore and Storage rules after reviewing them.
 
 Firebase Storage and Firestore use is subject to the limits and billing rules of your Firebase project. Verify the current plan and quotas before relying on it for public traffic.
 

@@ -12,23 +12,29 @@
 <div class="full"><label for="tagline">Tagline</label><input id="tagline"></div>
 <div class="full"><label for="description">Description</label><textarea id="description"></textarea></div>
 <div class="full"><label for="releaseUrl">GitHub Release download URL *</label><input id="releaseUrl" type="url" required></div>
-<div><label for="icon">Replace app icon (optional)</label><input id="icon" type="file" accept="image/png,image/jpeg,image/webp"></div>
-<div><label for="banner">Replace banner (optional)</label><input id="banner" type="file" accept="image/png,image/jpeg,image/webp"></div>
-<div class="full"><label for="screenshots">Add screenshots (optional, up to 5)</label><input id="screenshots" type="file" accept="image/png,image/jpeg,image/webp" multiple></div>
+<div><label for="icon">Replace app icon URL (optional)</label><input id="icon" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/icon.png"></div>
+<div><label for="banner">Replace banner URL (optional)</label><input id="banner" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/banner.png"></div>
+<div class="full"><label for="screenshots">Screenshot URLs (optional, one HTTPS URL per line, up to 5)</label><textarea id="screenshots" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/screenshot1.png"></textarea></div>
 <div class="full"><label><input id="published" type="checkbox" style="width:auto"> Published on public storefront</label></div>
 </div><button class="btn" id="save" type="submit">Save Changes</button>
 </form></main>
 <script type="module">
 import { doc,getDoc,updateDoc,serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import { ref,uploadBytes,getDownloadURL } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { auth,db,storage,requireConfiguredAdmin } from "./pws-firebase.js";
+import { auth,db,requireConfiguredAdmin } from "./pws-firebase.js";
 import { APPS_COLLECTION } from "./pws-config.js";
 const $=id=>document.getElementById(id),id=new URLSearchParams(location.search).get("id");
 const msg=$("msg"),form=$("form");let current=null;
 const show=(t,type="")=>{msg.hidden=false;msg.className="notice "+type;msg.textContent=t};
-const imageUrl=async(file,path)=>{if(!file)return "";if(!/^image\/(png|jpeg|webp)$/.test(file.type))throw new Error(file.name+": only PNG/JPG/WEBP images are allowed.");if(file.size>5*1024*1024)throw new Error(file.name+": image must be 5 MB or smaller.");const r=ref(storage,"palia-win-store/"+path+"/"+Date.now()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_"));await uploadBytes(r,file,{contentType:file.type});return getDownloadURL(r)};
-async function load(){if(!id)throw new Error("Missing app ID.");const snap=await getDoc(doc(db,APPS_COLLECTION,id));if(!snap.exists())throw new Error("This app could not be found.");current=snap.data();["name","version","category","developer","tagline","description","releaseUrl"].forEach(k=>$(k).value=current[k]||"");$("published").checked=!!current.published;form.hidden=false;msg.hidden=true}
-form.onsubmit=async e=>{e.preventDefault();const button=$("save");button.disabled=true;button.textContent="Saving…";try{const releaseUrl=$("releaseUrl").value.trim();if(!/^https:\/\/github\.com\/[^/]+\/[^/]+\/releases\/download\/[^/]+\/.+/i.test(releaseUrl)||!/\.(exe|msi|zip)(\?.*)?$/i.test(releaseUrl))throw new Error("Use a direct GitHub Release URL for an .exe, .msi, or .zip file.");const patch={name:$("name").value.trim(),version:$("version").value.trim(),category:$("category").value.trim(),developer:$("developer").value.trim(),tagline:$("tagline").value.trim(),description:$("description").value.trim(),releaseUrl,published:$("published").checked,updatedAt:serverTimestamp()};const icon=await imageUrl($("icon").files[0],id+"/icon");if(icon)patch.iconUrl=icon;const banner=await imageUrl($("banner").files[0],id+"/banner");if(banner)patch.bannerUrl=banner;const shots=Array.from($("screenshots").files).slice(0,5);if(shots.length){const urls=[];for(const file of shots)urls.push(await imageUrl(file,id+"/screenshots"));patch.screenshots=[...(current.screenshots||[]),...urls].slice(0,5)}await updateDoc(doc(db,APPS_COLLECTION,id),patch);show("App updated successfully.","success");setTimeout(()=>location.href="manage-app.html",900)}catch(e){show(e.message||"Could not update app.","error");button.disabled=false;button.textContent="Save Changes"}};
+const validImageUrl=value=>{if(!value)return true;try{return new URL(value).protocol==="https:"}catch{return false}};
+const validReleaseUrl=value=>/^https:\/\/github\.com\/[^/]+\/[^/]+\/releases\/download\/[^/]+\/.+\.(exe|msi|zip)(\?.*)?$/i.test(value);
+async function load(){if(!id)throw new Error("Missing app ID.");const snap=await getDoc(doc(db,APPS_COLLECTION,id));if(!snap.exists())throw new Error("This app could not be found.");current=snap.data();["name","version","category","developer","tagline","description","releaseUrl"].forEach(k=>$(k).value=current[k]||"");$("published").checked=!!current.published;$("icon").value="";$("banner").value="";$("screenshots").value=(current.screenshots||[]).join("\n");form.hidden=false;msg.hidden=true}
+form.onsubmit=async e=>{e.preventDefault();const button=$("save");button.disabled=true;button.textContent="Saving…";try{
+const releaseUrl=$("releaseUrl").value.trim();if(!validReleaseUrl(releaseUrl))throw new Error("Use a direct GitHub Release URL for an .exe, .msi, or .zip file.");
+const icon=$("icon").value.trim(),banner=$("banner").value.trim(),screenshots=$("screenshots").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,5);
+if(![icon,banner,...screenshots].every(validImageUrl))throw new Error("Image links must be valid HTTPS URLs.");
+const patch={name:$("name").value.trim(),version:$("version").value.trim(),category:$("category").value.trim(),developer:$("developer").value.trim(),tagline:$("tagline").value.trim(),description:$("description").value.trim(),releaseUrl,published:$("published").checked,updatedAt:serverTimestamp()};
+if(icon)patch.iconUrl=icon;if(banner)patch.bannerUrl=banner;patch.screenshots=screenshots;await updateDoc(doc(db,APPS_COLLECTION,id),patch);show("App updated successfully.","success");setTimeout(()=>location.href="manage-app.html",900)
+}catch(e){show(e.message||"Could not update app.","error");button.disabled=false;button.textContent="Save Changes"}};
 onAuthStateChanged(auth,async user=>{try{requireConfiguredAdmin(user);await load()}catch(e){show(e.message,"error")}});
 </script></body></html>

@@ -301,4 +301,25 @@ function updatePcPreview(){
 })();
 </script>
 </body>
-</html>
+</html      <section class="panel">
+        <h2>App Media (GitHub-hosted images)</h2>
+        <p class="muted">Add direct HTTPS image links from your repository or another public image host. Firebase Storage is not used.</p>
+        <div class="grid">
+          <div class="full"><label for="icon">App Icon URL *</label><input id="icon" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/assets/icon.png"><div id="iconName" class="file-name">Direct HTTPS image URL</div></div>
+          <div class="full"><label for="banner">Store Banner URL</label><input id="banner" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/assets/banner.png"><div id="bannerName" class="file-name">Optional direct HTTPS image URL</div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>App Screenshots — 5 Slots</h2>
+        <p class="muted">Paste direct HTTPS image links. Store the images in a public GitHub repository.</p>
+        <div class="shots-grid">
+          <div class="shot-upload"><div class="slot-title">Screenshot 1</div><label for="screen1">Screenshot URL</label><input id="screen1" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/screenshots/1.png"><button type="button" class="remove-shot" data-remove="screen1">Clear URL</button><div id="screen1Name" class="file-name">Optional HTTPS image URL</div></div>
+          <div class="shot-upload"><div class="slot-title">Screenshot 2</div><label for="screen2">Screenshot URL</label><input id="screen2" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/screenshots/2.png"><button type="button" class="remove-shot" data-remove="screen2">Clear URL</button><div id="screen2Name" class="file-name">Optional HTTPS image URL</div></div>
+          <div class="shot-upload"><div class="slot-title">Screenshot 3</div><label for="screen3">Screenshot URL</label><input id="screen3" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/screenshots/3.png"><button type="button" class="remove-shot" data-remove="screen3">Clear URL</button><div id="screen3Name" class="file-name">Optional HTTPS image URL</div></div>
+          <div class="shot-upload"><div class="slot-title">Screenshot 4</div><label for="screen4">Screenshot URL</label><input id="screen4" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/screenshots/4.png"><button type="button" class="remove-shot" data-remove="screen4">Clear URL</button><div id="screen4Name" class="file-name">Optional HTTPS image URL</div></div>
+          <div class="shot-upload"><div class="slot-title">Screenshot 5</div><label for="screen5">Screenshot URL</label><input id="screen5" type="url" placeholder="https://raw.githubusercontent.com/OWNER/REPO/main/screenshots/5.png"><button type="button" class="remove-shot" data-remove="screen5">Clear URL</button><div id="screen5Name" class="file-name">Optional HTTPS image URL</div></div>
+        </div>
+      </section>
+
+>

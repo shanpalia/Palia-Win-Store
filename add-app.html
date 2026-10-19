@@ -228,15 +228,11 @@ $("icon").onchange=()=>fileName($("icon"),"iconName");
 $("installer").onchange=()=>fileName($("installer"),"installerName");
 $("banner").onchange=()=>fileName($("banner"),"bannerName");
 function updateScreenshotPreview(){
-  $("preview").innerHTML="";
   for(let i=1;i<=5;i++){
     const input=$("screen"+i), f=input.files[0];
     $("screen"+i+"Name").textContent=f?f.name:"";
-    if(f){
-      const url=URL.createObjectURL(f);
-      $("preview").insertAdjacentHTML("beforeend",`<div class="shot"><img src="${url}" alt="Screenshot ${i}"><span>${i}</span></div>`);
-    }
   }
+  updatePcPreview();
 }
 for(let i=1;i<=5;i++) $("screen"+i).onchange=updateScreenshotPreview;
 document.querySelectorAll(".remove-shot").forEach(btn=>btn.onclick=()=>{

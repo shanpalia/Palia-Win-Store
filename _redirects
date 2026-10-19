@@ -1,0 +1,4 @@
+# Cloudflare Pages path compatibility
+# Keep existing GitHub Pages base-path URLs working when deployed at the Pages domain.
+# Requests are internally rewritten; the browser URL remains unchanged.
+/Palia-Win-Store/* /:splat 200
